@@ -1,18 +1,17 @@
 namespaces:
   create: false
-
 serviceAccounts:
   analytics:
     create: false
   evaluation:
     create: false
-
 services:
   auth:
     enabled: true
     image:
       repository: 927738510198.dkr.ecr.us-east-1.amazonaws.com/togglemaster-dev/auth-service
-      tag: v0.1.0
+      tag: v0.32.0
+      digest: sha256:bd9471b44b9536626d4a4524412272955d9cc475f0bddd125abdddc21a1a5e37
   flag:
     enabled: false
   targeting:
@@ -21,6 +20,5 @@ services:
     enabled: false
   analytics:
     enabled: false
-
 gateway:
   enabled: false

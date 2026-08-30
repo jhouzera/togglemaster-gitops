@@ -1,0 +1,64 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: togglemaster-addons
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - name: metrics-server
+            namespace: kube-system
+            repoURL: https://kubernetes-sigs.github.io/metrics-server/
+            chart: metrics-server
+            targetRevision: 3.12.2
+            valuesPath: addons/metrics-server/values.yaml
+          - name: keda
+            namespace: keda
+            repoURL: https://kedacore.github.io/charts
+            chart: keda
+            targetRevision: 2.15.1
+            valuesPath: addons/keda/values.yaml
+          - name: nginx-gateway
+            namespace: nginx-gateway
+            repoURL: oci://ghcr.io/nginx/charts
+            chart: nginx-gateway-fabric
+            targetRevision: 1.5.0
+            valuesPath: addons/nginx-gateway/values.yaml
+          - name: external-secrets
+            namespace: external-secrets
+            repoURL: https://charts.external-secrets.io
+            chart: external-secrets
+            targetRevision: 0.11.0
+            valuesPath: addons/external-secrets/values.yaml
+          - name: reloader
+            namespace: reloader
+            repoURL: https://stakater.github.io/stakater-charts
+            chart: reloader
+            targetRevision: 1.0.76
+            valuesPath: addons/reloader/values.yaml
+  template:
+    metadata:
+      name: '{{name}}'
+    spec:
+      project: default
+      sources:
+        - repoURL: '{{repoURL}}'
+          chart: '{{chart}}'
+          targetRevision: '{{targetRevision}}'
+          helm:
+            valueFiles:
+              - $values/{{valuesPath}}
+        - repoURL: https://github.com/jhouzera/togglemaster-addons.git
+          targetRevision: main
+          ref: values
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{namespace}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=true

@@ -1,0 +1,23 @@
+namespaces:
+  create: false
+
+serviceAccounts:
+  analytics:
+    create: false
+  evaluation:
+    create: false
+
+services:
+  auth:
+    enabled: false
+  flag:
+    enabled: false
+  targeting:
+    enabled: false
+  evaluation:
+    enabled: false
+  analytics:
+    enabled: false
+
+gateway:
+  enabled: true

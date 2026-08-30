@@ -1,0 +1,16 @@
+{{- range $name, $svc := .Values.services }}
+{{- if and $svc.enabled (hasKey $svc "initDb") $svc.initDb.enabled }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $svc.initDb.configMapName }}
+  namespace: {{ $svc.namespace }}
+  labels:
+{{ include "togglemaster.labels" $ | indent 4 }}
+    app: {{ $svc.name }}
+data:
+  init.sql: |
+{{ $svc.initDb.sql | indent 4 }}
+{{- end }}
+{{- end }}

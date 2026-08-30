@@ -1,0 +1,280 @@
+global:
+  partOf: togglemaster
+  awsRegion: us-east-1
+
+imagePullPolicy: IfNotPresent
+
+namespaces:
+  create: true
+  items:
+    - auth
+    - flag
+    - targeting
+    - evaluation
+    - analytics
+    - edge
+
+externalSecrets:
+  enabled: true
+  refreshInterval: 1m
+  secretStore:
+    kind: ClusterSecretStore
+    name: aws-secretsmanager
+  targetSecretName: app-secrets
+  remoteSecretName: togglemaster-dev/app/config
+
+secretStore:
+  enabled: true
+  name: aws-secretsmanager
+  namespace: external-secrets
+  service: SecretsManager
+  awsRegion: us-east-1
+  serviceAccountRef:
+    name: external-secrets
+    namespace: external-secrets
+
+serviceAccounts:
+  analytics:
+    create: true
+    name: analytics-service-sa
+    namespace: analytics
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::927738510198:role/togglemaster-dev-analytics-irsa
+  evaluation:
+    create: true
+    name: evaluation-service-sa
+    namespace: evaluation
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::927738510198:role/togglemaster-dev-evaluation-irsa
+
+services:
+  auth:
+    enabled: true
+    name: auth-service
+    namespace: auth
+    replicas: 2
+    containerPort: 8001
+    servicePort: 8001
+    image:
+      repository: 927738510198.dkr.ecr.us-east-1.amazonaws.com/togglemaster-dev/auth-service
+      tag: v0.1.0
+    env:
+      PORT: "8001"
+    secretEnv:
+      - name: DATABASE_URL
+        secretKey: auth_database_url
+      - name: MASTER_KEY
+        secretKey: master_key
+        remoteKey: togglemaster-dev/app/master-key
+    initDb:
+      enabled: true
+      configMapName: auth-db-init
+      sql: |
+        CREATE TABLE IF NOT EXISTS api_keys (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(100) NOT NULL,
+            key_hash VARCHAR(64) NOT NULL UNIQUE,
+            is_active BOOLEAN DEFAULT true,
+            created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        );
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 250m
+        memory: 256Mi
+
+  flag:
+    enabled: true
+    name: flag-service
+    namespace: flag
+    replicas: 2
+    containerPort: 8002
+    servicePort: 8002
+    image:
+      repository: 927738510198.dkr.ecr.us-east-1.amazonaws.com/togglemaster-dev/flag-service
+      tag: v0.1.0
+    env:
+      PORT: "8002"
+      AUTH_SERVICE_URL: http://auth-service.auth.svc.cluster.local:8001
+    secretEnv:
+      - name: DATABASE_URL
+        secretKey: flag_database_url
+    initDb:
+      enabled: true
+      configMapName: flag-db-init
+      sql: |
+        CREATE TABLE IF NOT EXISTS flags (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(100) UNIQUE NOT NULL,
+            description TEXT,
+            is_enabled BOOLEAN NOT NULL DEFAULT false,
+            created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE OR REPLACE FUNCTION trigger_set_timestamp()
+        RETURNS TRIGGER AS $$
+        BEGIN
+          NEW.updated_at = NOW();
+          RETURN NEW;
+        END;
+        $$ LANGUAGE plpgsql;
+
+        DROP TRIGGER IF EXISTS set_timestamp ON flags;
+        CREATE TRIGGER set_timestamp
+        BEFORE UPDATE ON flags
+        FOR EACH ROW
+        EXECUTE PROCEDURE trigger_set_timestamp();
+    resources:
+      requests:
+        cpu: 75m
+        memory: 96Mi
+      limits:
+        cpu: 300m
+        memory: 384Mi
+
+  targeting:
+    enabled: true
+    name: targeting-service
+    namespace: targeting
+    replicas: 2
+    containerPort: 8003
+    servicePort: 8003
+    image:
+      repository: 927738510198.dkr.ecr.us-east-1.amazonaws.com/togglemaster-dev/targeting-service
+      tag: v0.1.0
+    env:
+      PORT: "8003"
+      AUTH_SERVICE_URL: http://auth-service.auth.svc.cluster.local:8001
+    secretEnv:
+      - name: DATABASE_URL
+        secretKey: targeting_database_url
+    initDb:
+      enabled: true
+      configMapName: targeting-db-init
+      sql: |
+        CREATE TABLE IF NOT EXISTS targeting_rules (
+            id SERIAL PRIMARY KEY,
+            flag_name VARCHAR(100) UNIQUE NOT NULL,
+            is_enabled BOOLEAN NOT NULL DEFAULT true,
+            rules JSONB NOT NULL,
+            created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        );
+
+        CREATE OR REPLACE FUNCTION trigger_set_timestamp()
+        RETURNS TRIGGER AS $$
+        BEGIN
+          NEW.updated_at = NOW();
+          RETURN NEW;
+        END;
+        $$ LANGUAGE plpgsql;
+
+        DROP TRIGGER IF EXISTS set_timestamp ON targeting_rules;
+        CREATE TRIGGER set_timestamp
+        BEFORE UPDATE ON targeting_rules
+        FOR EACH ROW
+        EXECUTE PROCEDURE trigger_set_timestamp();
+    resources:
+      requests:
+        cpu: 75m
+        memory: 96Mi
+      limits:
+        cpu: 300m
+        memory: 384Mi
+
+  evaluation:
+    enabled: true
+    name: evaluation-service
+    namespace: evaluation
+    replicas: 2
+    containerPort: 8004
+    servicePort: 8004
+    serviceAccountName: evaluation-service-sa
+    image:
+      repository: 927738510198.dkr.ecr.us-east-1.amazonaws.com/togglemaster-dev/evaluation-service
+      tag: v0.1.0
+    env:
+      PORT: "8004"
+      FLAG_SERVICE_URL: http://flag-service.flag.svc.cluster.local:8002
+      TARGETING_SERVICE_URL: http://targeting-service.targeting.svc.cluster.local:8003
+      AWS_REGION: us-east-1
+    secretEnv:
+      - name: REDIS_URL
+        secretKey: redis_url
+      - name: SERVICE_API_KEY
+        secretKey: service_api_key
+        remoteKey: togglemaster-dev/app/service-api-key
+      - name: AWS_SQS_URL
+        secretKey: aws_sqs_url
+    resources:
+      requests:
+        cpu: 75m
+        memory: 96Mi
+      limits:
+        cpu: 350m
+        memory: 384Mi
+
+  analytics:
+    enabled: true
+    name: analytics-service
+    namespace: analytics
+    replicas: 1
+    containerPort: 8005
+    servicePort: 8005
+    serviceAccountName: analytics-service-sa
+    image:
+      repository: 927738510198.dkr.ecr.us-east-1.amazonaws.com/togglemaster-dev/analytics-service
+      tag: v0.1.0
+    env:
+      PORT: "8005"
+      AWS_REGION: us-east-1
+    secretEnv:
+      - name: AWS_SQS_URL
+        secretKey: aws_sqs_url
+      - name: AWS_DYNAMODB_TABLE
+        secretKey: dynamodb_table_name
+    resources:
+      requests:
+        cpu: 75m
+        memory: 96Mi
+      limits:
+        cpu: 400m
+        memory: 512Mi
+
+probes:
+  readiness:
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 2
+    failureThreshold: 3
+  liveness:
+    initialDelaySeconds: 30
+    periodSeconds: 20
+    timeoutSeconds: 2
+    failureThreshold: 3
+
+autoscaling:
+  evaluation:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    cpuAverageUtilization: 70
+    memoryAverageUtilization: 80
+
+keda:
+  analytics:
+    enabled: true
+    pollingInterval: 15
+    cooldownPeriod: 30
+    minReplicaCount: 0
+    maxReplicaCount: 5
+    queueLength: "5"
+
+gateway:
+  enabled: true
+  className: nginx
+  namespace: edge
+  hostname: api.togglemaster.rudzlab.com

@@ -1,0 +1,21 @@
+{{- if .Values.keda.analytics.enabled }}
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ .Values.services.analytics.name }}-sqs-scaler
+  namespace: {{ .Values.services.analytics.namespace }}
+spec:
+  scaleTargetRef:
+    name: {{ .Values.services.analytics.name }}
+  pollingInterval: {{ .Values.keda.analytics.pollingInterval }}
+  cooldownPeriod: {{ .Values.keda.analytics.cooldownPeriod }}
+  minReplicaCount: {{ .Values.keda.analytics.minReplicaCount }}
+  maxReplicaCount: {{ .Values.keda.analytics.maxReplicaCount }}
+  triggers:
+    - type: aws-sqs-queue
+      metadata:
+        queueLength: {{ .Values.keda.analytics.queueLength | quote }}
+        awsRegion: {{ .Values.global.awsRegion | quote }}
+        queueURLFromEnv: AWS_SQS_URL
+        identityOwner: operator
+{{- end }}

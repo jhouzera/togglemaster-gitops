@@ -1,0 +1,26 @@
+namespaces:
+  create: false
+
+serviceAccounts:
+  analytics:
+    create: false
+  evaluation:
+    create: false
+
+services:
+  auth:
+    enabled: false
+  flag:
+    enabled: false
+  targeting:
+    enabled: true
+    image:
+      repository: 927738510198.dkr.ecr.us-east-1.amazonaws.com/togglemaster-dev/targeting-service
+      tag: v0.1.0
+  evaluation:
+    enabled: false
+  analytics:
+    enabled: false
+
+gateway:
+  enabled: false

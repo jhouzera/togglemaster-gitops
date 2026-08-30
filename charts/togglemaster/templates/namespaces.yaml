@@ -1,0 +1,11 @@
+{{- if .Values.namespaces.create }}
+{{- range $ns := .Values.namespaces.items }}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ $ns }}
+  labels:
+    app.kubernetes.io/part-of: {{ $.Values.global.partOf }}
+{{- end }}
+{{- end }}

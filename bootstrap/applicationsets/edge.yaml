@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: togglemaster-edge
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - name: togglemaster-edge
+            namespace: edge
+            repoURL: https://github.com/jhouzera/togglemaster-gitops.git
+            path: charts/togglemaster
+            targetRevision: main
+            valuesFile: apps/edge-values.yaml
+  template:
+    metadata:
+      name: '{{name}}'
+    spec:
+      project: default
+      source:
+        repoURL: '{{repoURL}}'
+        targetRevision: '{{targetRevision}}'
+        path: '{{path}}'
+        helm:
+          valueFiles:
+            - values.yaml
+            - '{{valuesFile}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{namespace}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ApplyOutOfSyncOnly=true

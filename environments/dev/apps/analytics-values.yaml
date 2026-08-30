@@ -1,12 +1,10 @@
 namespaces:
   create: false
-
 serviceAccounts:
   analytics:
     create: true
   evaluation:
     create: false
-
 services:
   auth:
     enabled: false
@@ -20,7 +18,7 @@ services:
     enabled: true
     image:
       repository: 927738510198.dkr.ecr.us-east-1.amazonaws.com/togglemaster-dev/analytics-service
-      tag: v0.1.0
-
+      tag: v0.32.0
+      digest: sha256:624d4014d38e34ad69123ace7d51a864c4e3435f00a210168812f9e84c84c15e
 gateway:
   enabled: false

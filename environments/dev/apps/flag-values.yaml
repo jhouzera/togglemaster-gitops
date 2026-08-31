@@ -1,12 +1,10 @@
 namespaces:
   create: false
-
 serviceAccounts:
   analytics:
     create: false
   evaluation:
     create: false
-
 services:
   auth:
     enabled: false
@@ -14,13 +12,13 @@ services:
     enabled: true
     image:
       repository: 927738510198.dkr.ecr.us-east-1.amazonaws.com/togglemaster-dev/flag-service
-      tag: v0.1.0
+      tag: v0.43.0-fd13f5c
+      digest: sha256:ab67ba97cf178ba728187a9523ce127de1b7f795d5bf91d7ae21aeef33e6177d
   targeting:
     enabled: false
   evaluation:
     enabled: false
   analytics:
     enabled: false
-
 gateway:
   enabled: false

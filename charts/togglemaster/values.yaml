@@ -65,7 +65,7 @@ services:
         secretKey: auth_database_url
       - name: MASTER_KEY
         secretKey: master_key
-        remoteKey: togglemaster-dev/app/master-key
+        remoteKey: togglemaster-dev/auth/service-api-key
     initDb:
       enabled: true
       configMapName: auth-db-init
@@ -206,7 +206,7 @@ services:
         secretKey: redis_url
       - name: SERVICE_API_KEY
         secretKey: service_api_key
-        remoteKey: togglemaster-dev/app/service-api-key
+        remoteKey: togglemaster-dev/evaluation/service-api-key
       - name: AWS_SQS_URL
         secretKey: aws_sqs_url
     resources:

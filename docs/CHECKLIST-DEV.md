@@ -6,7 +6,6 @@
 - [ ] Confirmar que o chart Helm `charts/togglemaster` esta consistente.
 
 ## 2. Estrutura obrigatoria do repositório
-- [ ] `bootstrap/applicationsets/addons.yaml` presente.
 - [ ] `bootstrap/applicationsets/apps.yaml` presente.
 - [ ] `charts/togglemaster/Chart.yaml` presente.
 - [ ] `charts/togglemaster/values.yaml` presente.
@@ -30,14 +29,13 @@ Em `Settings > Actions > General`:
 - [ ] Confirmar que alteracoes automatizadas de tag chegam na branch esperada (`main`).
 
 ## 6. Validacao dos ApplicationSets
-- [ ] `addons.yaml` aponta para o repositório `togglemaster-addons` correto.
 - [ ] `apps.yaml` define um Application por microsservico.
 - [ ] Cada Application dos microsservicos referencia um `values.yaml` dedicado.
 - [ ] O Application de `edge` esta isolado para Gateway/rotas.
 
 ## 7. Validacao no ArgoCD
 - [ ] Confirmar existencia dos ApplicationSets no namespace `argocd`.
-- [ ] Confirmar criacao dos Applications de addons e microsservicos.
+- [ ] Confirmar criacao das Applications de microsservicos.
 - [ ] Confirmar `Sync Status = Synced` e `Health = Healthy` para todos os Applications.
 - [ ] Confirmar auto-sync habilitado (`prune` e `selfHeal`).
 
@@ -52,6 +50,6 @@ Em `Settings > Actions > General`:
 - [ ] Se imagem nao atualizar: confirmar update do values vindo de `togglemaster-apps`.
 
 ## 10. Criterio de pronto
-- [ ] Addons e microsservicos sincronizam automaticamente no `dev`.
+- [ ] Microsservicos sincronizam automaticamente no `dev`.
 - [ ] Atualizacoes de tag vindas do CI sao aplicadas sem intervenção manual.
 - [ ] Estrutura GitOps permanece segregada por Application e por dominio.

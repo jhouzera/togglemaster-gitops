@@ -16,6 +16,7 @@ Modelo operacional:
 - Um values.yaml dedicado por microsservico consumindo o mesmo chart Helm.
 - Separacao de ownership por dominio funcional.
 - Integracao com External Secrets Operator e Stakater Reloader.
+- Application raiz `togglemaster-apps` para o ApplicationSet dos microsservicos.
 - Promocao de imagens por Pull Request criado pelo GitHub Actions.
 - Checklist operacional no ambiente dev: `docs/CHECKLIST-DEV.md`.
 - Runbook operacional no ambiente dev: `docs/RUNBOOK-DEV.md`.
@@ -32,3 +33,6 @@ Os values dos microsservicos ficam em `environments/dev/apps/`. O workflow reuti
 `update-gitops.yml` valida o servico, a tag, o digest e o values alvo antes de abrir um Pull
 Request para `main`. O workflow `Validate GitOps Dev` valida o YAML e renderiza o chart Helm
 antes do merge. O ArgoCD precisa somente de acesso de leitura ao repositorio.
+
+Os addons sao instalados localmente pelo script do repositorio `togglemaster-addons` e nao sao
+reconciliados pelo ArgoCD.

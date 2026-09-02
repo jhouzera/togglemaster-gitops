@@ -4,3 +4,4 @@ resources:
   - applicationsets/apps.yaml
   - applicationsets/edge.yaml
   - applicationsets/addons.yaml
+  - argocd/external-secret-repo-creds.yaml

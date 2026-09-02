@@ -203,16 +203,12 @@ services:
       FLAG_SERVICE_URL: http://flag-service.flag.svc.cluster.local:8002
       TARGETING_SERVICE_URL: http://targeting-service.targeting.svc.cluster.local:8003
       AWS_REGION: us-east-1
+      REDIS_URL: rediss://master.togglemaster-dev-redis.imegrn.use1.cache.amazonaws.com:6379
+      AWS_SQS_URL: https://sqs.us-east-1.amazonaws.com/927738510198/togglemaster-dev-evaluation-events
     secretEnv:
-      - name: REDIS_URL
-        secretKey: redis_url
-        remoteKey: togglemaster-dev/evaluation/redis-url
       - name: SERVICE_API_KEY
         secretKey: service_api_key
         remoteKey: togglemaster-dev/evaluation/service-api-key
-      - name: AWS_SQS_URL
-        secretKey: aws_sqs_url
-        remoteKey: togglemaster-dev/evaluation/sqs-url
     resources:
       requests:
         cpu: 75m
@@ -235,13 +231,8 @@ services:
     env:
       PORT: "8005"
       AWS_REGION: us-east-1
-    secretEnv:
-      - name: AWS_SQS_URL
-        secretKey: aws_sqs_url
-        remoteKey: togglemaster-dev/evaluation/sqs-url
-      - name: AWS_DYNAMODB_TABLE
-        secretKey: dynamodb_table_name
-        remoteKey: togglemaster-dev/analytics/dynamodb-table-name
+      AWS_SQS_URL: https://sqs.us-east-1.amazonaws.com/927738510198/togglemaster-dev-evaluation-events
+      AWS_DYNAMODB_TABLE: togglemaster-dev-analytics-events
     resources:
       requests:
         cpu: 75m

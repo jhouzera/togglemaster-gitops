@@ -21,7 +21,6 @@ externalSecrets:
     kind: ClusterSecretStore
     name: aws-secretsmanager
   targetSecretName: app-secrets
-  remoteSecretName: togglemaster-dev/apps/config
 
 secretStore:
   enabled: true
@@ -63,6 +62,7 @@ services:
     secretEnv:
       - name: DATABASE_URL
         secretKey: auth_database_url
+        remoteKey: togglemaster-dev/auth/db-url
       - name: MASTER_KEY
         secretKey: master_key
         remoteKey: togglemaster-dev/auth/master-key
@@ -101,6 +101,7 @@ services:
     secretEnv:
       - name: DATABASE_URL
         secretKey: flag_database_url
+        remoteKey: togglemaster-dev/flag/db-url
     initDb:
       enabled: true
       configMapName: flag-db-init
@@ -151,6 +152,7 @@ services:
     secretEnv:
       - name: DATABASE_URL
         secretKey: targeting_database_url
+        remoteKey: togglemaster-dev/targeting/db-url
     initDb:
       enabled: true
       configMapName: targeting-db-init
@@ -204,11 +206,13 @@ services:
     secretEnv:
       - name: REDIS_URL
         secretKey: redis_url
+        remoteKey: togglemaster-dev/evaluation/redis-url
       - name: SERVICE_API_KEY
         secretKey: service_api_key
         remoteKey: togglemaster-dev/evaluation/service-api-key
       - name: AWS_SQS_URL
         secretKey: aws_sqs_url
+        remoteKey: togglemaster-dev/evaluation/sqs-url
     resources:
       requests:
         cpu: 75m
@@ -234,8 +238,10 @@ services:
     secretEnv:
       - name: AWS_SQS_URL
         secretKey: aws_sqs_url
+        remoteKey: togglemaster-dev/evaluation/sqs-url
       - name: AWS_DYNAMODB_TABLE
         secretKey: dynamodb_table_name
+        remoteKey: togglemaster-dev/analytics/dynamodb-table-name
     resources:
       requests:
         cpu: 75m

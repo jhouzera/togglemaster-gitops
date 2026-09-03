@@ -266,7 +266,7 @@ keda:
     enabled: false
     pollingInterval: 15
     cooldownPeriod: 30
-    minReplicaCount: 0
+    minReplicaCount: 1
     maxReplicaCount: 5
     queueLength: "5"
 

@@ -30,3 +30,12 @@ spec:
           - CreateNamespace=true
           - ApplyOutOfSyncOnly=true
           - ServerSideApply=true
+      ignoreDifferences:
+        - group: "apps"
+          kind: "Deployment"
+          jsonPointers:
+            - /status
+        - group: "apps"
+          kind: "StatefulSet"
+          jsonPointers:
+            - /status

@@ -37,6 +37,12 @@ spec:
             path: charts/togglemaster
             targetRevision: main
             valuesFile: environments/dev/apps/analytics-values.yaml
+          - name: togglemaster-edge
+            namespace: edge
+            repoURL: https://github.com/jhouzera/togglemaster-gitops.git
+            path: charts/togglemaster
+            targetRevision: main
+            valuesFile: environments/dev/apps/edge-values.yaml
   template:
     metadata:
       name: '{{name}}'

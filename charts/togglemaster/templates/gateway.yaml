@@ -15,7 +15,7 @@ spec:
         namespaces:
           from: Same
 ---
-apiVersion: gateway.networking.k8s.io/v1
+apiVersion: gateway.networking.k8s.io/v1beta1
 kind: ReferenceGrant
 metadata:
   name: allow-edge-auth-service
@@ -30,7 +30,7 @@ spec:
       kind: Service
       name: {{ .Values.services.auth.name }}
 ---
-apiVersion: gateway.networking.k8s.io/v1
+apiVersion: gateway.networking.k8s.io/v1beta1
 kind: ReferenceGrant
 metadata:
   name: allow-edge-flag-service
@@ -45,7 +45,7 @@ spec:
       kind: Service
       name: {{ .Values.services.flag.name }}
 ---
-apiVersion: gateway.networking.k8s.io/v1
+apiVersion: gateway.networking.k8s.io/v1beta1
 kind: ReferenceGrant
 metadata:
   name: allow-edge-targeting-service
@@ -60,7 +60,7 @@ spec:
       kind: Service
       name: {{ .Values.services.targeting.name }}
 ---
-apiVersion: gateway.networking.k8s.io/v1
+apiVersion: gateway.networking.k8s.io/v1beta1
 kind: ReferenceGrant
 metadata:
   name: allow-edge-evaluation-service
@@ -75,7 +75,7 @@ spec:
       kind: Service
       name: {{ .Values.services.evaluation.name }}
 ---
-apiVersion: gateway.networking.k8s.io/v1
+apiVersion: gateway.networking.k8s.io/v1beta1
 kind: ReferenceGrant
 metadata:
   name: allow-edge-analytics-service

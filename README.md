@@ -36,5 +36,3 @@ antes do merge. O ArgoCD precisa somente de acesso de leitura ao repositorio.
 
 Os addons sao instalados localmente pelo script do repositorio `togglemaster-addons` e nao sao
 reconciliados pelo ArgoCD.
-
-teste

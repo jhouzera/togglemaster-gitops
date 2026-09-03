@@ -22,3 +22,7 @@ services:
       digest: sha256:6fffc28a7353bedf1290d770f0111700cfea4f68d3a4273f81cdd470f8849144
 gateway:
   enabled: false
+
+keda:
+  analytics:
+    enabled: true

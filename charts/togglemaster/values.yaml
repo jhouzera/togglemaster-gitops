@@ -23,7 +23,7 @@ externalSecrets:
   targetSecretName: app-secrets
 
 secretStore:
-  enabled: true
+  enabled: false
   name: aws-secretsmanager
   namespace: external-secrets
   service: SecretsManager

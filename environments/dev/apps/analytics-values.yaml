@@ -24,3 +24,7 @@ services:
 
 gateway:
   enabled: false
+
+keda:
+  analytics:
+    enabled: true

@@ -24,3 +24,7 @@ services:
 
 gateway:
   enabled: false
+
+autoscaling:
+  evaluation:
+    enabled: true

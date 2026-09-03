@@ -255,7 +255,7 @@ probes:
 
 autoscaling:
   evaluation:
-    enabled: true
+    enabled: false
     minReplicas: 2
     maxReplicas: 10
     cpuAverageUtilization: 70
@@ -263,7 +263,7 @@ autoscaling:
 
 keda:
   analytics:
-    enabled: true
+    enabled: false
     pollingInterval: 15
     cooldownPeriod: 30
     minReplicaCount: 0

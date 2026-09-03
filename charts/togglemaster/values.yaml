@@ -21,10 +21,9 @@ externalSecrets:
     kind: ClusterSecretStore
     name: aws-secretsmanager
   targetSecretName: app-secrets
-  remoteSecretName: togglemaster-dev/app/config
 
 secretStore:
-  enabled: true
+  enabled: false
   name: aws-secretsmanager
   namespace: external-secrets
   service: SecretsManager
@@ -63,9 +62,10 @@ services:
     secretEnv:
       - name: DATABASE_URL
         secretKey: auth_database_url
+        remoteKey: togglemaster-dev/auth/db-url
       - name: MASTER_KEY
         secretKey: master_key
-        remoteKey: togglemaster-dev/app/master-key
+        remoteKey: togglemaster-dev/auth/master-key
     initDb:
       enabled: true
       configMapName: auth-db-init
@@ -101,6 +101,7 @@ services:
     secretEnv:
       - name: DATABASE_URL
         secretKey: flag_database_url
+        remoteKey: togglemaster-dev/flag/db-url
     initDb:
       enabled: true
       configMapName: flag-db-init
@@ -151,6 +152,7 @@ services:
     secretEnv:
       - name: DATABASE_URL
         secretKey: targeting_database_url
+        remoteKey: togglemaster-dev/targeting/db-url
     initDb:
       enabled: true
       configMapName: targeting-db-init
@@ -201,14 +203,12 @@ services:
       FLAG_SERVICE_URL: http://flag-service.flag.svc.cluster.local:8002
       TARGETING_SERVICE_URL: http://targeting-service.targeting.svc.cluster.local:8003
       AWS_REGION: us-east-1
+      REDIS_URL: rediss://master.togglemaster-dev-redis.imegrn.use1.cache.amazonaws.com:6379
+      AWS_SQS_URL: https://sqs.us-east-1.amazonaws.com/927738510198/togglemaster-dev-evaluation-events
     secretEnv:
-      - name: REDIS_URL
-        secretKey: redis_url
       - name: SERVICE_API_KEY
         secretKey: service_api_key
-        remoteKey: togglemaster-dev/app/service-api-key
-      - name: AWS_SQS_URL
-        secretKey: aws_sqs_url
+        remoteKey: togglemaster-dev/evaluation/service-api-key
     resources:
       requests:
         cpu: 75m
@@ -231,11 +231,8 @@ services:
     env:
       PORT: "8005"
       AWS_REGION: us-east-1
-    secretEnv:
-      - name: AWS_SQS_URL
-        secretKey: aws_sqs_url
-      - name: AWS_DYNAMODB_TABLE
-        secretKey: dynamodb_table_name
+      AWS_SQS_URL: https://sqs.us-east-1.amazonaws.com/927738510198/togglemaster-dev-evaluation-events
+      AWS_DYNAMODB_TABLE: togglemaster-dev-analytics-events
     resources:
       requests:
         cpu: 75m

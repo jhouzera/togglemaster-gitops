@@ -1,5 +1,9 @@
 namespaces:
   create: false
+
+secretStore:
+  enabled: true
+
 serviceAccounts:
   analytics:
     create: false

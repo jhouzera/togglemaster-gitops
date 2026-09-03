@@ -9,7 +9,7 @@ spec:
         repoURL: https://github.com/jhouzera/togglemaster-addons.git
         revision: main
         directories:
-          - addons/*
+          - path: addons/*
   template:
     metadata:
       name: '{{path.basename}}'

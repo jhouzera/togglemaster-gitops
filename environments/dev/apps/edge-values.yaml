@@ -21,3 +21,4 @@ services:
 
 gateway:
   enabled: true
+  hostname: togglemaster.rudtux.com.br

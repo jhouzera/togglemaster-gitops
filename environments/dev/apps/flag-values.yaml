@@ -12,8 +12,8 @@ services:
     enabled: true
     image:
       repository: 927738510198.dkr.ecr.us-east-1.amazonaws.com/togglemaster-dev/flag-service
-      tag: v0.43.0-fd13f5c
-      digest: sha256:ab67ba97cf178ba728187a9523ce127de1b7f795d5bf91d7ae21aeef33e6177d
+      tag: v0.47.0-17ed635
+      digest: sha256:cf1ba2c1d41d8af1eb5df0d88f0972e0d4071e12e75cb5d35fd1131cd2ef97fc
   targeting:
     enabled: false
   evaluation:

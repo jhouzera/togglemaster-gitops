@@ -274,4 +274,4 @@ gateway:
   enabled: true
   className: nginx
   namespace: edge
-  hostname: togglemaster.rudtux.com.br
+  hostname: api.togglemaster.com.br

@@ -275,3 +275,4 @@ gateway:
   className: nginx
   namespace: edge
   hostname: api.togglemaster.com.br
+  argocdHostname: argocd.togglemaster.com.br

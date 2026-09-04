@@ -18,8 +18,8 @@ services:
     enabled: true
     image:
       repository: 927738510198.dkr.ecr.us-east-1.amazonaws.com/togglemaster-dev/analytics-service
-      tag: v0.51.0
-      digest: sha256:8547bdfd9ddde469b83992ee2231fef18b2c4654edbd4c110c412531ad6ccbde
+      tag: v0.54.0
+      digest: sha256:42b23184999dc589efafacd99f5a80cf425bf5fcdc61c868e30298b8a170eb82
 gateway:
   enabled: false
 keda:

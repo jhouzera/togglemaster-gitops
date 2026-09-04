@@ -14,8 +14,8 @@ services:
     enabled: true
     image:
       repository: 927738510198.dkr.ecr.us-east-1.amazonaws.com/togglemaster-dev/targeting-service
-      tag: v0.52.0
-      digest: sha256:ffa2005c6de98e670b76fae7c9a59e2dda8f674a3dd305c4a30069e3666493c7
+      tag: v0.55.0
+      digest: sha256:a24015d6c6885bf5143367730f8defa9a57c83e1b707c53c0ec168f179581c4b
   evaluation:
     enabled: false
   analytics:

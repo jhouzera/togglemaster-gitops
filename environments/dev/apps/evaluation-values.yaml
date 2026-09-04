@@ -16,8 +16,8 @@ services:
     enabled: true
     image:
       repository: 927738510198.dkr.ecr.us-east-1.amazonaws.com/togglemaster-dev/evaluation-service
-      tag: v0.47.0-17ed635
-      digest: sha256:3e2fc5deccb3c0325ed6b9779d94147027bdf963276a3d1dd87fcec63178aacb
+      tag: v0.51.0
+      digest: sha256:91c895153934ec3da69309dc162716d5458723d0156607e5f92e219f4b6c96c4
   analytics:
     enabled: false
 gateway:

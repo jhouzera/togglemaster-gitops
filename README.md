@@ -1,38 +1,23 @@
 # togglemaster-gitops
 
-Repositorio GitOps da plataforma ToggleMaster.
+Repositório central de **GitOps** da plataforma ToggleMaster, operado via **ArgoCD**.
 
-Proposito:
-- Declarar o estado desejado das aplicacoes no cluster EKS.
-- Separar a gestao de entrega continua da base de codigo das aplicacoes.
+## 🎯 Propósito
+Agir como a "única fonte da verdade" (Single Source of Truth) para o estado desejado das aplicações no cluster EKS. Este repositório contém o Master Helm Chart `togglemaster`, que gerencia todos os microsserviços através da declaração de `values.yaml` por ambiente.
 
-Responsabilidades:
-- Helm Charts dos microsservicos.
-- ApplicationSets do ArgoCD.
-- Bootstrap declarativo de sincronizacao.
+## 🚀 Como Utilizar
 
-Modelo operacional:
-- Um Application por microsservico.
-- Um values.yaml dedicado por microsservico consumindo o mesmo chart Helm.
-- Separacao de ownership por dominio funcional.
-- Integracao com External Secrets Operator e Stakater Reloader.
-- Application raiz `togglemaster-apps` para o ApplicationSet dos microsservicos.
-- Promocao de imagens por Pull Request criado pelo GitHub Actions.
-- Checklist operacional no ambiente dev: `docs/CHECKLIST-DEV.md`.
-- Runbook operacional no ambiente dev: `docs/RUNBOOK-DEV.md`.
+O ArgoCD (instalado no cluster) fica continuamente observando este repositório. Sempre que uma nova *tag* de imagem é promovida pela pipeline de CI (`togglemaster-apps`) via um novo Pull Request aqui, basta você aprovar o merge na `main` e o ArgoCD cuidará do *deployment* e do *rollout* no EKS automaticamente.
 
-Dependencias externas:
-- E monitorado pelo ArgoCD provisionado pelo `togglemaster-iac`.
-- O `togglemaster-apps` publica imagens somente com tags `vMAJOR.MINOR.PATCH`.
-- O workflow de Apps coleta o digest da imagem e cria um Pull Request que atualiza o values file correspondente.
-- O `togglemaster-secrets-generator` cria secrets no AWS Secrets Manager; o External Secrets
-	Operator, instalado pelos addons, os disponibiliza no cluster.
-## Promocao de imagens
+### Exemplo Simples de Atualização Manual (Escalando Pods)
 
-Os values dos microsservicos ficam em `environments/dev/apps/`. O workflow reutilizavel
-`update-gitops.yml` valida o servico, a tag, o digest e o values alvo antes de abrir um Pull
-Request para `main`. O workflow `Validate GitOps Dev` valida o YAML e renderiza o chart Helm
-antes do merge. O ArgoCD precisa somente de acesso de leitura ao repositorio.
+Para escalar o `auth-service` manualmente sem mexer no código-fonte do app:
+1. Edite o arquivo `environments/dev/apps/auth-values.yaml`
+2. Modifique o campo de `replicas` de `2` para `4`
+3. Comite a alteração para a branch `main`.
+4. O ArgoCD atualizará o cluster instantaneamente usando o Webhook configurado.
 
-Os addons sao instalados localmente pelo script do repositorio `togglemaster-addons` e nao sao
-reconciliados pelo ArgoCD.
+## 🔐 Segurança e Boas Práticas
+- O repositório armazena apenas **manifestos YAML declarativos** e *templates*. 
+- Dados confidenciais são carregados dinamicamente no cluster via `ExternalSecret` (buscando direto do AWS Secrets Manager de forma criptografada), sem nunca passarem em texto puro neste repositório.
+- A comunicação e roteamento HTTP ocorrem unicamente via **NGINX Gateway Fabric** e **HTTPRoutes** da API Gateway.

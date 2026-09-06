@@ -5,6 +5,11 @@ Repositório central de **GitOps** da plataforma ToggleMaster, operado via **Arg
 ## 🎯 Propósito
 Agir como a "única fonte da verdade" (Single Source of Truth) para o estado desejado das aplicações no cluster EKS. Este repositório contém o Master Helm Chart `togglemaster`, que gerencia todos os microsserviços através da declaração de `values.yaml` por ambiente.
 
+## ⚙️ Como Funciona
+Este repositório é o "cérebro" das implantações e segue o padrão **Pull-based GitOps**.
+O **ArgoCD**, que reside dentro do cluster EKS, monitora ativamente este repositório via Webhooks do GitHub. Quando o arquivo `values.yaml` de uma aplicação tem a versão de imagem alterada (geralmente por conta do bot do `togglemaster-apps`), o ArgoCD acorda instantaneamente.
+Ele calcula o "drift" (a diferença entre o que está rodando no cluster versus o que está escrito nos arquivos YAML) e aplica a nova configuração interagindo com a API do Kubernetes. Se a mudança falhar no cluster, o próprio ArgoCD tem a capacidade de sinalizar o erro, mantendo tudo declarativo e auditável.
+
 ## 🚀 Como Utilizar
 
 O ArgoCD (instalado no cluster) fica continuamente observando este repositório. Sempre que uma nova *tag* de imagem é promovida pela pipeline de CI (`togglemaster-apps`) via um novo Pull Request aqui, basta você aprovar o merge na `main` e o ArgoCD cuidará do *deployment* e do *rollout* no EKS automaticamente.

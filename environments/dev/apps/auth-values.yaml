@@ -12,8 +12,8 @@ services:
     enabled: true
     image:
       repository: 927738510198.dkr.ecr.us-east-1.amazonaws.com/togglemaster-dev/auth-service
-      tag: v0.76.0-d0ed18b
-      digest: sha256:ecb0ccaecb583090808f5052535bd5c5937ab2b86289a36774993136f6c7fb82
+      tag: v0.79.0-47cbb7e
+      digest: sha256:83d6813f9cf61fabdc4bbcf5985323366b03c9830a38bbe5add4bf805b3a1aee
   flag:
     enabled: false
   targeting:
